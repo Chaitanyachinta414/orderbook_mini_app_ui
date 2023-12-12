@@ -1,38 +1,220 @@
+
 .App {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 100vw;
+
+  min-height: 100vh;
+
+  background: linear-gradient(rgb(166, 159, 255), rgb(214, 214, 214));
+}
+
+.loginContainer {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  width: 25em;
+
+  height: 60;
+
+  background-color: rgb(255, 255, 255);
+
+  border-radius: 25px;
+  padding-bottom: 20px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 10px;
+  width: 80%;
+  letter-spacing: 0.8px;
+}
+
+.input-container input {
+  height: 1.5em;
+  border-radius: 15px;
+  border-width: 15px;
+  border: white;
+  box-shadow: 0 0 6px rgb(166, 159, 255);
+  outline: none;
+  padding: 10px;
+  font-size: 20px;
+}
+.input-container select {
+  border-radius: 15px;
+  height: 50px;
+  border: white;
+  box-shadow: 0 0 6px rgb(166, 159, 255);
+  outline: none;
+  padding: 10px;
+  background: none;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+input:focus {
+  box-shadow: 0 1px 1px rgba(229, 103, 23, 0.075) inset,
+    0 0 16px rgb(125, 115, 255);
+
+  outline: 0 none;
+}
+
+a {
+  color: rgb(0, 68, 255);
+
+  font-weight: 500;
+
+  margin: 5px;
+
+  cursor: pointer;
+
+  align-self: baseline;
+
+  margin-left: 40px;
+}
+
+.loginBut {
+  height: 4em;
+
+  width: 24em;
+
+  margin: 25px 10px 5px 10px;
+
+  border-radius: 15px;
+
+  background: linear-gradient(rgb(124, 114, 255), rgb(255, 116, 116));
+
+  border: none;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.loginBut:hover {
+  transform: scale(1.1);
+
+  box-shadow: 0 0 12px rgb(199, 199, 199);
+}
+
+.loginBut p {
+  color: white;
+
+  font-size: 20px;
+
+  margin-top: 13px;
+}
+
+
+.table-wrapper {
+  width: auto;
+}
+
+.table {
+  display: block;
+
+  overflow: hidden;
+
+  table-layout: fixed;
+
+  border-collapse: collapse;
+
+  border-radius: 10px;
+
+  white-space: nowrap;
+
+  width: 100em;
+
+  max-width: 80%;
+
+  margin: auto;
+
+  overflow-x: auto;
+}
+
+.table thead {
+  background-color: #ccc;
+
+  color: #222;
+}
+
+.table th,
+.table td {
+  padding: 0.8rem;
+
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.table td {
+  border-top: 0.5px solid #ddd;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.table .thead-id {
+  position: sticky;
+  left: 0;
+  background: #ccc;
+}
+.table .tdata-id {
+position: sticky;
+left: 0;
+background: white;
+}
+
+.table .tdata-id:hover {
+background-color: #eee;
+}
+.table tbody tr:hover {
+  background-color: #eee;
+}
+.Navbar-Section {
+  background: #ddeeeb;
+}
+  .width-adjust {
+      max-width: 80%;
+      display: flex;
+      margin: auto;
+      color: black;
+      justify-content: space-between;
+      margin-bottom: 30px;
   }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+  .logo-adjust {
+    display: flex;
   }
-  to {
-    transform: rotate(360deg);
-  }
+.header {
+    text-align: center;
+    text-decoration-line: underline;
+}
+ .icon-adjustment {
+    display: flex;
+    align-items: center;
+    align-self: auto;
+    color: black;
+    padding: 10px;
+}
+.search-icon {
+  background: white;
+  border-radius: 10px;
+  font-size: 22px;
+}
+.book-icon {
+  font-size: 25px ;
+}
+
+.data-error {
+  text-align: center;
+  color: red;
+}
+.Form-updated-data {
+  text-align: center;
 }
