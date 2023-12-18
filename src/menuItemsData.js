@@ -1,44 +1,28 @@
 export const menuItemsData = [
-    // ...
     {
       title: 'Dashboard',
-      url: '/'
+      url: '/referencedata'
     },
     {
         title: 'Order Book',
-        url: '/',
+        url: '/referencedata',
         submenu: [
           {
             title: 'Add New Row',
-            url: 'web-design',
+            url: 'addnewreferencedata',
           },
           {
             title: 'Order Book File Upload',
-            url: 'web-dev',
+            url: 'orderbookfileupload',
           },
           {
             title: 'Search Order Book',
-            url: 'seo',
+            url: 'search',
           },
         ],
       },
       {
         title: 'About',
         url: '/',
-        submenu: [
-          {
-            title: 'Web Design',
-            url: 'web-design',
-          },
-          {
-            title: 'Web Development',
-            url: 'web-dev',
-          },
-          {
-            title: 'SEO',
-            url: 'seo',
-          },
-        ],
       },
-    // ...
   ];

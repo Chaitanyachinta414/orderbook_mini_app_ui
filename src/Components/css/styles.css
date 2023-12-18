@@ -208,3 +208,46 @@ a {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.table-wrapper .desktop-nav ul li {
+  list-style-type: none;
+}
+.table-wrapper .desktop-nav .menus {
+  display: flex;
+  align-items: center;
+  align-self: auto;
+  column-gap: 40px;
+  margin-top: 25px;
+  padding: 0;
+}
+.table-wrapper .desktop-nav .menus .menu-items {
+  color: #000;
+}
+.table-wrapper .desktop-nav .menus .menu-items a {
+  margin: 0;
+  color: #000;
+  font-weight: 500;
+  font-size: 16px;
+}
+.table-wrapper .desktop-nav .dropdown {
+  display: none;
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+}
+.table-wrapper .desktop-nav .dropdown .menu-items {
+  padding: 5px;
+}
+.table-wrapper .desktop-nav .dropdown .menu-items:hover {
+  background: #ddeeeb;
+}
+.table-wrapper .desktop-nav .show {
+  display: block;
+  position: absolute;
+  z-index: 999;
+}
+.table-wrapper .desktop-nav .menu-btn {
+  border: none;
+  background: none;
+  font-weight: 600;
+  font-size: 16px;
+}

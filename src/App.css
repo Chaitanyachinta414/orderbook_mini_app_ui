@@ -207,6 +207,9 @@ background-color: #eee;
       justify-content: space-between;
       margin-bottom: 30px;
   }
+  a{
+    color: #000;
+  }
   .logo-adjust {
     display: flex;
   }

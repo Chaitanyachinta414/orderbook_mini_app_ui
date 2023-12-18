@@ -7,6 +7,7 @@ import { Link} from 'react-router-dom';
 const Header = () => {
 
     return (
+        <div className='table-wrapper'>
         <div className="Navbar-Section">
         <div className='width-adjust'>
             <div className='logo-adjust'>
@@ -16,6 +17,7 @@ const Header = () => {
             <div><Navbar /></div>
             <Link to="/search" className="icon-adjustment search-icon"><TbDatabaseSearch /></Link>
         </div>
+    </div>
     </div>
     )
 

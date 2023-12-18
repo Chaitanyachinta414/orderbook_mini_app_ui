@@ -101,7 +101,6 @@ const handlePrevPage =() => {
     return (
         <div className="container">
         <div className='table-wrapper'>
-            <Header />
     {records?.length >0 ?
             (<table className='table'>
 

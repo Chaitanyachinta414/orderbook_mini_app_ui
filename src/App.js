@@ -8,10 +8,12 @@ import UpdateRefData from './Components/UpdateRefData';
 import AddReferenceData from './Components/AddReferenceData';
 import UserLogin from './Components/Userlogin';
 import Search from './Components/Search';
+import Header from './Components/Header';
 
 function App() {
   return (
     <BrowserRouter>
+    <Header />
     <Routes>
       <Route exact path="/" Component={UserLogin} />
       <Route exact path="/referencedata" Component={Referencedata} />
