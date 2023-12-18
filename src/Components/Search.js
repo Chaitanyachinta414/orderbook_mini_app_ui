@@ -2,25 +2,41 @@ import React,{useState}from 'react';
 import SearchResults from './SearchResults';
 const Search = () => {
     
-    let [columnName,setCloumnName]= useState("");
-    let [columnValue,setCloumnValue]=useState("");
-    let [searchRecords, setSearchRecords]= useState([])
+    let [searchRecords, setSearchRecords]= useState({});
+    let [recordsData,setRecordsData] = useState({});
 
-    const handleSearch =(tableColumnName,tableColumnValue) => {
-        fetch('http://localhost:8080/search?columnname='+tableColumnName+'&searchvalue='+tableColumnValue)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                setSearchRecords(data)
-            })
-    }
     const handlecancelSearch =() => {
-        setCloumnValue("")
+        setSearchRecords({});
+        document.querySelectorAll("input").forEach((input) => {
+            input.value = "";
+        });
     }
     const handleOnChange = (e) => {
-        setCloumnName(e.target.name);
-        setCloumnValue(e.target.value);
+        setSearchRecords({
+            ...searchRecords,
+            [e.target.name]: e.target.value
+        })
     }
+   
+    const isValid = Object.keys(searchRecords).length;
+    const handleSearch = () => {
+        if(isValid > 0){
+            fetch("http://localhost:8080/search",
+            {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(searchRecords)
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                setRecordsData(data)
+            })
+        }
+        else {
+            alert('Please fill all fields');
+        }
+           
+    };
     return (
         <div className="container">
         <div className='table-wrapper'>
@@ -32,8 +48,9 @@ const Search = () => {
                     <div>
                         <label>PO#: </label>
                         <input 
+                            
                             type="text" 
-                            name="po" 
+                            name="PO" 
                             onChange={(e) =>handleOnChange(e)}
                         />
                     </div>
@@ -41,74 +58,91 @@ const Search = () => {
                     <div>
                     <label  >Opportunity Description: </label>
                     <input
+                        
                         type="text"
-                        name="opportunity_Description"
+                        name="Opportunity_Description"
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
                     
                     <div>
                     <label >Project Name: </label>
                     <input
+                        
                         type="text"
-                        name='project_Name'
+                        name='Project_Name'
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
 
                     <div>
                     <label >Dev/IMP/Supp: </label>
                     <input
-
+                        
                         type="text"
-                        name='dev_IMP_Supp'
+                        name='Dev_IMP_Supp'
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
 
                     <div>
                     <label >Technology: </label>
                     <input
+                        
                         type="text"
-                        name='technology'
+                        name='Technology'
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
                     
                     <div>
                     <label >Customer Name: </label>
                     <input
+                        
                         type="text"
-                        name='customer_Name'
+                        name='Customer_Name'
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
                     
                     <div>
                     <label >Project vs Annuity: </label>
                     <input
+                        
                         type="text"
-                        name='project_vs_Annuity'
+                        name='Project_vs_Annuity'
                         onChange={(e) =>handleOnChange(e)}
                     /></div>
                     
                     <div>
                     <label >Account Name: </label>
-                    <input type="text"  name='account_Name'   onChange={(e) =>handleOnChange(e)}/>
+                    <input 
+                        
+                         type="text"  
+                         name='Account_Name'   
+                         onChange={(e) =>handleOnChange(e)}/>
                     </div>
                     
                     <div>
                     <label >PO Availability: </label>
                     <input
+                        
                         type="text"
-                        name="po_Availability" 
+                        name="po_availability" 
                         onChange={(e) =>handleOnChange(e)}
                         /></div>
 
                     <div>
                     <label>PID: </label>
-                    <input type="number"  name="pid"  onChange={(e) =>handleOnChange(e)} />
+                    <input 
+                        
+                        type="number"  
+                        name="PID"  
+                        onChange={(e) =>handleOnChange(e)} />
                     </div>
                 </div>
-                <button type="button" onClick={()=> handleSearch(columnName,columnValue)} className='update-btn'>Search</button>
+                <button type="button" onClick={handleSearch} className='update-btn'>Search</button>
                 <button type="button" onClick={handlecancelSearch} className='cancel-btn'>Cancel</button>
             </form>
-            {searchRecords?.length >0 ? <SearchResults SearchRecords={searchRecords} SetSearchRecords = {(newVal) => setSearchRecords(newVal)}/>:""}
+            {recordsData?.length >0? 
+                <SearchResults SearchJSON={searchRecords} SearchDisplayRecords={recordsData} SetSearchDisplayRecords = {(newVal) => setRecordsData(newVal)}/>:""}
+            {searchRecords.length !== 0 && recordsData?.length === 0 ?  (<h2 className='data-error'>No Search Results Found</h2>):"" }
+           
         </div>
 
     </div>

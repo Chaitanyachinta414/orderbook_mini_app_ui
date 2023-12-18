@@ -117,6 +117,25 @@ a {
   width: auto;
 }
 
+.table-wrapper .export-icons-adj {
+  text-align: right;
+  text-align: right;
+  max-width: 80%;
+  margin: 0 auto 30px auto;
+}
+.table-wrapper .export-icons-adj span {
+  padding: 10px;
+  color: #000;
+  font-size: 25px;
+  cursor: pointer;
+}
+.table-wrapper .export-icons-adj .pdf-icon{
+  color: #DF4A2A;
+  
+}
+.table-wrapper .export-icons-adj .excel-icon {
+  color: #54AB55;
+}
 .table {
   display: block;
 

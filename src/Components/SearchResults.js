@@ -1,48 +1,118 @@
 import './../App.css'
 import React, { useState } from 'react'
-import { useNavigate} from 'react-router-dom';
-import { BsFillPencilFill,BsFillXOctagonFill } from 'react-icons/bs';
 import Pagination from './Pagination';
-import { GoChevronDown,GoChevronUp } from "react-icons/go";
+import { FaFileCsv,FaFilePdf  } from "react-icons/fa6";
+import { RiFileExcel2Fill } from "react-icons/ri";
 
 
 
-const SearchResults = ({SearchRecords,SetSearchRecords}) => {
-
-    const navigate =useNavigate();
+const SearchResults = ({SearchJSON,SearchDisplayRecords,SetSearchDisplayRecords}) => {
     const [currentPage, setCurrentPage]= useState(1);
-    const [recordsPerPage]= useState(10);
-    let [clickCount, setClickCount]= useState(1);
-    let [headerName, setHeaderName]= useState("");
-    let [sortOrder, setSortOrder] = useState("desc");   
+    const [recordsPerPage]= useState(10);  
 
-    const handleEdit = (data) => {
-        let objValue= JSON.stringify(data)
-        localStorage.setItem("EditedData",objValue);
-        navigate('/updaterecords')
+
+const handlePdfExport =() => {
+    fetch("http://localhost:8080/pdf",
+    {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(SearchJSON)
+    })
+    .then((res) => res.blob())
+    .then((pdfBlob) => {
+        // Create a Blob URL for the PDF
+        const url = window.URL.createObjectURL(pdfBlob);
+    
+        // Create a download link
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'OrderBook-pdf.pdf';
+        document.body.appendChild(a);
+    
+        // Trigger a click on the link to start the download
+        a.click();
+    
+        // Remove the link from the document
+        document.body.removeChild(a);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+const handleCsvExport =() => {
+    fetch("http://localhost:8080/export/csv",
+    {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(SearchJSON)
+    })
+    .then((res) => res.text())
+    .then((csvData) => {
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
         
-    }
-    const handleDelete =(item) => {
-        fetch("http://localhost:8080/deleteOrderbook/"+item.id,
-            {
-                method:'DELETE'
-            })
-            .then((res) => res.json())
-            .then((data) => {
-                SetSearchRecords(data)
-            })
+        // Create a download link
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'OrderBook_data_csv.csv';
+        document.body.appendChild(a);
+        
+        // Trigger a click on the link to start the download
+        a.click();
+        
+        // Remove the link from the document
+        document.body.removeChild(a);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
 
-    }   
+const handleExcelExport =() => {
+    fetch("http://localhost:8080/excel",
+    {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(SearchJSON)
+    })
+    .then((res) => res.blob())
+    .then((excelBlob) => {
+        // Create a Blob URL for the Excel file
+        const url = window.URL.createObjectURL(excelBlob);
+    
+        // Create an anchor element
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'OrderBook_data_excel.xlsx'; 
+    
+        // Append the anchor element to the document body
+        document.body.appendChild(a);
+    
+        // Trigger a click on the anchor element to initiate the download
+        a.click();
+    
+        // Remove the anchor element from the document
+        document.body.removeChild(a);
+    
+        // Revoke the Blob URL to release resources
+        window.URL.revokeObjectURL(url);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
 //Get Current Page 
 
 const indexOfLastOrderBook= currentPage * recordsPerPage;
 const indexOfFirstOrderBook= indexOfLastOrderBook - recordsPerPage;
 
 //Get the sliced data to records per page for UI 
-const currentOrderBooks= SearchRecords?.slice(indexOfFirstOrderBook, indexOfLastOrderBook);
+const currentOrderBooks= SearchDisplayRecords?.slice(indexOfFirstOrderBook, indexOfLastOrderBook);
 
 //To get the num of pages as per the records shown
-const numberOfPages= Math.ceil(SearchRecords.length/recordsPerPage);
+const numberOfPages= Math.ceil(SearchDisplayRecords.length/recordsPerPage);
 
 const handlePrevPage =() => {
     if(currentPage >1){
@@ -56,139 +126,53 @@ const handlePrevPage =() => {
         }
     
  }
- const handleApiCall = (headerName,sortOrder) => {
-    fetch('http://localhost:8080/sorted?columnName='+headerName+'&sortOrder='+sortOrder)
-    .then(response => response.json())
-    .then(data => {
-        SetSearchRecords(data)
-    })
-}
-
- const handleClicks=(tableHeaderName) => {
-     setHeaderName(tableHeaderName)  
-     if (headerName === tableHeaderName || headerName === '') {
-        if (clickCount%2 !== 0) { 
-            setClickCount(clickCount + 1);
-            setSortOrder(sortOrder ==="asc" ? sortOrder = "desc" : sortOrder="asc");
-        } else if(clickCount%2  === 0)  {
-            setClickCount(clickCount - 1);
-            setSortOrder(sortOrder ==="desc" ? sortOrder = "asc" : sortOrder="desc");
-        }
-       
-      } else {
-        clickCount=1;
-        sortOrder="asc"
-        setSortOrder(sortOrder)
-      }
-
-    handleApiCall(tableHeaderName,sortOrder);
-}
-
     return (
         <div className="container">
         <div className='table-wrapper'>
-    {SearchRecords?.length >0 ?
+            <div className='export-icons-adj'>
+                <span className='pdf-icon'  title="PDF Download" onClick={handlePdfExport}><FaFilePdf /></span>
+                <span className='csv-icon' title="CSV Download" onClick={handleCsvExport}><FaFileCsv /></span>
+                <span className='excel-icon' title="Excel Download" onClick={handleExcelExport}><RiFileExcel2Fill /></span>
+            </div>
+    {SearchDisplayRecords?.length >0 ?
             (<table className='table'>
 
                 <thead>
                     <tr>
-                        <th className='thead-id' onClick={() => handleClicks('id')}>ID {
-                        headerName  ==="id" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName  ==="id" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th className='thead-id'>ID</th>
                         <th >Del IBU </th>
                         <th >Sales IBU </th>
                         <th >Sales IBU Head </th>
                         <th >Del IBU Head </th>
-                        <th onClick={() => handleClicks('Opportunity_Description')}>Opportunity Description 
-                        {headerName  ==="Opportunity_Description" && sortOrder  ==="desc" ? <GoChevronDown />:""}{
-                        headerName  ==="Opportunity_Description" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Customer_Name')}>Customer Name 
-                        {headerName ==="Customer_Name" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Customer_Name" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th >Opportunity Description </th>
+                        <th >Customer Name </th>
                         <th>Opportunity ID</th>
-                        <th onClick={() => handleClicks('PO')}>PO#
-                        {headerName ==="PO" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="PO" && sortOrder  ==="asc" ? <GoChevronUp />:""}</th>
+                        <th >PO#</th>
                         <th>PO Availability</th>
-                        <th onClick={() => handleClicks('PID')}>PID
-                        {headerName ==="PID" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="PID" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Project_Name')}>Project Name
-                        {headerName ==="Project_Name" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Project_Name" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th >PID</th>
+                        <th >Project Name</th>
                         <th>TML#</th>
-                        <th onClick={() => handleClicks('Account_Name')}>Account Name
-                        {headerName ==="Account_Name" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Account_Name" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Digital_Flag')}>Digital Flag
-                        {headerName ==="Digital_Flag" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Digital_Flag" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Project_vs_Annuity')}>Project vs Annuity
-                        {headerName ==="Project_vs_Annuity" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Project_vs_Annuity" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Headwind_Tailwind')}>Head Wind/Tail Wind
-                        {headerName ==="Headwind_Tailwind" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Headwind_Tailwind" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Dev_IMP_Supp')}>Dev / IMP / Supp
-                        {headerName ==="Dev_IMP_Supp" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Dev_IMP_Supp" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Technology')}>Technology
-                        {headerName ==="Technology" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Technology" && sortOrder  ==="asc" ? <GoChevronUp />:""}</th>
-                        <th onClick={() => handleClicks('Competency')}>Competency
-                        {headerName ==="Competency" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Competency" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Pillar')}>Pillar
-                        {headerName ==="Pillar" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Pillar" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th>Account Name</th>
+                        <th>Digital Flag</th>
+                        <th >Project vs Annuity</th>
+                        <th >Head Wind/Tail Wind</th>
+                        <th >Dev / IMP / Supp </th>
+                        <th >Technology</th>
+                        <th >Competency</th>
+                        <th >Pillar</th>
                         <th>Vertical Name</th>
                         <th>GE/Non GE</th>
-                        <th onClick={() => handleClicks('Status_CASUM')}>Status as per CASUM
-                        {headerName ==="Status_CASUM" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Status_CASUM" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('PM')}>PM
-                        {headerName ==="PM" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="PM" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('PGM')}>PGM
-                        {headerName ==="PGM" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="PGM" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('BRM')}>BRM 
-                        {headerName ==="BRM" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="BRM" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th >Status as per CASUM </th>
+                        <th >PM </th>
+                        <th >PGM</th>
+                        <th >BRM </th>
                         <th>CDM/L2 </th>
-                        <th onClick={() => handleClicks('Business')}>Business
-                        {headerName ==="Business" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Business" && sortOrder  ==="asc" ? <GoChevronUp />:""}
+                        <th >Business
                         </th>
-                        <th onClick={() => handleClicks('Sub_business')}>Sub business
-                        {headerName ==="Sub_business" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Sub_business" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
-                        <th onClick={() => handleClicks('Total_Contract_Amount_in_USD')}>Total Contract Amount in USD
-                        {headerName ==="Total_Contract_Amount_in_USD" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="Total_Contract_Amount_in_USD" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th >Sub business </th>
+                        <th>Total Contract Amount in USD</th>
                         <th>PO Curency</th>
-                        <th onClick={() => handleClicks('End_date')}>End Date
-                        {headerName ==="End_date" && sortOrder  ==="desc" ? <GoChevronDown />:""}
-                        {headerName ==="End_date" && sortOrder  ==="asc" ? <GoChevronUp />:""}
-                        </th>
+                        <th >End Date</th>
                         <th>Unbilled Amount (Excluding POC + JV)</th>
                         <th>Apr-23</th>
                         <th>May-23</th>
@@ -208,10 +192,6 @@ const handlePrevPage =() => {
                         <th>Q4-24_Net</th>
                         <th>FY(23-24)</th>
                         <th>Remarks</th>
-
-                        <th>Edit Action</th>
-
-                        <th>Delete Action</th>
 
                     </tr> 
 
@@ -240,7 +220,7 @@ const handlePrevPage =() => {
 
                             <td title={item.po} >{item.po}</td>
 
-                            <td title={item.po_Availability} >{item.po_Availability}</td>
+                            <td title={item.po_availability} >{item.po_availability}</td>
 
                             <td title={item.pid} >{item.pid}</td>
 
@@ -266,7 +246,7 @@ const handlePrevPage =() => {
 
                             <td title={item.vertical_Name} >{item.vertical_Name}</td>
 
-                            <td title={item.ge_NonGE} >{item.ge_NonGE}</td>
+                            <td title={item.ge_nonGE} >{item.ge_nonGE}</td>
 
                             <td title={item.status_CASUM} >{item.status_CASUM}</td>
 
@@ -326,17 +306,14 @@ const handlePrevPage =() => {
 
                             <td title={item.remarks} >{item.remarks}</td>
 
-
-                            <td  ><span className='actions' onClick={() => handleEdit(item)}><BsFillPencilFill /></span></td>
-                            <td  ><span className='actions' onClick={() => handleDelete(item)}><BsFillXOctagonFill /></span></td>
-                        </tr>
+                       </tr>
                     ))}
 
                 </tbody>
              </table>):(<h2 className='data-error'>No Records Found</h2>)
 }
         </div>
-        {SearchRecords.length >10 ? (<Pagination currentPage={currentPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage}/>):""}
+        {SearchDisplayRecords.length >10 ? (<Pagination currentPage={currentPage} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage}/>):""}
     </div>
     );
 

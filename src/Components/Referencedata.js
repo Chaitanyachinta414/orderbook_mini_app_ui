@@ -4,8 +4,7 @@ import { Link, useNavigate} from 'react-router-dom';
 import { BsFillPencilFill,BsFillXOctagonFill } from 'react-icons/bs';
 import Pagination from './Pagination';
 import { GoChevronDown,GoChevronUp } from "react-icons/go";
-import { TbDatabaseSearch } from "react-icons/tb";
-import { GiBookAura } from "react-icons/gi";
+import Header from './Header';
 
 
 const ReferenceData = () => {
@@ -102,15 +101,7 @@ const handlePrevPage =() => {
     return (
         <div className="container">
         <div className='table-wrapper'>
-            <div className="Navbar-Section">
-                <div className='width-adjust'>
-                    <div className='logo-adjust'>
-                        <span className="icon-adjustment book-icon"><GiBookAura /></span>
-                        <h2 className='header'>Orderbook</h2>
-                    </div>
-                    <Link to="/search" className="icon-adjustment search-icon"><TbDatabaseSearch /></Link>
-                </div>
-            </div>
+            <Header />
     {records?.length >0 ?
             (<table className='table'>
 
@@ -264,7 +255,7 @@ const handlePrevPage =() => {
 
                             <td title={item.po} >{item.po}</td>
 
-                            <td title={item.po_Availability} >{item.po_Availability}</td>
+                            <td title={item.po_availability} >{item.po_availability}</td>
 
                             <td title={item.pid} >{item.pid}</td>
 
@@ -290,7 +281,7 @@ const handlePrevPage =() => {
 
                             <td title={item.vertical_Name} >{item.vertical_Name}</td>
 
-                            <td title={item.ge_NonGE} >{item.ge_NonGE}</td>
+                            <td title={item.ge_nonGE} >{item.ge_nonGE}</td>
 
                             <td title={item.status_CASUM} >{item.status_CASUM}</td>
 
